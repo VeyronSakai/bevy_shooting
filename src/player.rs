@@ -1,10 +1,13 @@
 use bevy::ecs::prelude::*;
 use bevy::prelude::*;
 
+const SPEED: f32 = 20.0;
+
 pub struct Player;
 
 pub struct Velocity {
-    pub val: Vec2,
+    pub speed: f32,
+    pub dir: Vec2,
 }
 
 pub fn spawn_player(commands: &mut Commands) {
@@ -17,5 +20,12 @@ pub fn spawn_player(commands: &mut Commands) {
         ..Default::default()
     })
         .insert(Player)
-        .insert(Velocity { val: Vec2::new(0.0, 0.0) });
+        .insert(Velocity { dir: Vec2::new(0.0, 0.0) , speed: SPEED});
+}
+
+pub fn update_player_pos(mut player_query: Query<(&mut Transform, &Velocity), With<Player>>) {
+    if let Ok((mut transform, velocity)) = player_query.single_mut() {
+        transform.translation.x += velocity.dir.x * velocity.speed * 0.2;
+        transform.translation.y += velocity.dir.y * velocity.speed * 0.2;
+    }
 }

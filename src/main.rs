@@ -1,7 +1,11 @@
 mod player;
+mod bullet;
+mod physics;
 
 use bevy::prelude::*;
 use crate::player::*;
+use crate::physics::*;
+use crate::bullet::*;
 
 fn main() {
     App::build()
@@ -13,6 +17,7 @@ fn main() {
         .add_startup_system(setup.system())
         .add_system_to_stage(CoreStage::PreUpdate, handle_input.system())
         .add_system(update_player_pos.system())
+        .add_system(update_bullet_pos.system())
         .run();
 }
 
@@ -24,6 +29,7 @@ fn setup(mut commands: Commands) {
     commands.insert_resource(ClearColor(Color::rgb(0.0, 0.0, 0.0)));
 
     spawn_player(&mut commands);
+    spawn_bullet(&mut commands);
 }
 
 fn handle_input(input: Res<Input<KeyCode>>, mut player_query: Query<&mut Velocity, With<Player>>) {

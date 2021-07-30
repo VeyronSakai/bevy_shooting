@@ -1,7 +1,11 @@
 use bevy::ecs::prelude::*;
 use bevy::prelude::*;
 
-struct Player {}
+pub struct Player;
+
+pub struct Velocity {
+    pub val: Vec2,
+}
 
 pub fn spawn_player(commands: &mut Commands) {
     let sprite_size = Vec2::new(100.0, 100.0);
@@ -11,5 +15,7 @@ pub fn spawn_player(commands: &mut Commands) {
             ..Default::default()
         },
         ..Default::default()
-    }).insert(Player {});
+    })
+        .insert(Player)
+        .insert(Velocity { val: Vec2::new(0.0, 0.0) });
 }

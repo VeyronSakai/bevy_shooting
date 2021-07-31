@@ -4,6 +4,12 @@ pub struct FireBulletInfo {
     pub interval: f32,
 }
 
+impl FireBulletInfo {
+    pub fn is_in_interval(&self) -> bool {
+        return self.time < self.interval;
+    }
+}
+
 pub struct WindowSize {
     pub w: f32,
     pub h: f32,

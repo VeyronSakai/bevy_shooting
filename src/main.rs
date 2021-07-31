@@ -21,7 +21,7 @@ fn main() {
         .add_system(update_player_pos.system())
         .add_system(update_bullet_pos.system())
         .add_system(spawn_bullet.system())
-        .add_system(delete_bullet.system())
+        .add_system(despawn_bullet.system())
         .run();
 }
 

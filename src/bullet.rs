@@ -15,7 +15,7 @@ pub fn spawn_bullet(
 
             fires_bullet.time += time.delta_seconds();
 
-            if fires_bullet.time < fires_bullet.interval {
+            if fires_bullet.is_in_interval() {
                 return;
             }
 
@@ -49,7 +49,7 @@ pub fn update_bullet_pos(mut bullet_query: Query<(&mut Transform, &Velocity), Wi
     }
 }
 
-pub fn delete_bullet(
+pub fn despawn_bullet(
     mut commands: Commands,
     window_size: Res<WindowSize>,
     mut bullet_query: Query<(Entity, &Transform), With<Bullet>>,

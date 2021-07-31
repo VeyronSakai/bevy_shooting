@@ -1,13 +1,13 @@
-mod player;
 mod bullet;
-mod physics;
 mod common;
+mod physics;
+mod player;
 
-use bevy::prelude::*;
-use common::FiresBullet;
-use crate::player::*;
-use crate::physics::*;
 use crate::bullet::*;
+use crate::common::*;
+use crate::physics::*;
+use crate::player::*;
+use bevy::prelude::*;
 
 fn main() {
     App::build()
@@ -21,20 +21,31 @@ fn main() {
         .add_system(update_player_pos.system())
         .add_system(update_bullet_pos.system())
         .add_system(spawn_bullet.system())
+        .add_system(delete_bullet.system())
         .run();
 }
 
-fn setup(mut commands: Commands) {
+fn setup(mut commands: Commands, mut windows: ResMut<Windows>) {
+    let window = windows.get_primary_mut().unwrap();
+
     // カメラを生成する
     commands.spawn_bundle(OrthographicCameraBundle::new_2d());
 
     // 背景の色を黒くする
     commands.insert_resource(ClearColor(Color::rgb(0.0, 0.0, 0.0)));
 
+    commands.insert_resource(WindowSize {
+        w: window.width(),
+        h: window.height(),
+    });
+
     spawn_player(&mut commands);
 }
 
-fn handle_input(input: Res<Input<KeyCode>>, mut player_query: Query<(&mut Velocity, &mut FiresBullet), With<Player>>) {
+fn handle_input(
+    input: Res<Input<KeyCode>>,
+    mut player_query: Query<(&mut Velocity, &mut FiresBullet), With<Player>>,
+) {
     if let Ok((mut velocity, mut fires_bullet)) = player_query.single_mut() {
         velocity.dir = Vec2::new(0.0, 0.0);
 

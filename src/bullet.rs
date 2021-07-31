@@ -3,6 +3,16 @@ use crate::physics::*;
 use crate::player::*;
 use bevy::prelude::*;
 
+pub struct BulletPlugin;
+
+impl Plugin for BulletPlugin{
+    fn build(&self, app: &mut AppBuilder) {
+        app.add_system(update_bullet_pos.system())
+        .add_system(spawn_bullet.system())
+        .add_system(despawn_bullet.system());
+    }
+}
+
 pub struct Bullet;
 
 pub fn spawn_bullet(

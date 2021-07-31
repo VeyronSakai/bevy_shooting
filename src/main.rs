@@ -20,10 +20,8 @@ fn main() {
         .add_plugins(DefaultPlugins)
         .add_startup_system(setup.system())
         .add_plugin(PlayerPlugin)
+        .add_plugin(BulletPlugin)
         .add_system_to_stage(CoreStage::PreUpdate, handle_input.system())
-        .add_system(update_bullet_pos.system())
-        .add_system(spawn_bullet.system())
-        .add_system(despawn_bullet.system())
         .run();
 }
 

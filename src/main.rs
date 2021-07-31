@@ -19,6 +19,7 @@ fn main() {
         })
         .add_plugins(DefaultPlugins)
         .add_startup_system(setup.system())
+        .add_startup_stage("game_setup", SystemStage::single(spawn_player.system()))
         .add_system_to_stage(CoreStage::PreUpdate, handle_input.system())
         .add_system(update_player_pos.system())
         .add_system(update_bullet_pos.system())
@@ -27,7 +28,12 @@ fn main() {
         .run();
 }
 
-fn setup(mut commands: Commands, mut windows: ResMut<Windows>, asset_server: Res<AssetServer>, mut materials: ResMut<Assets<ColorMaterial>>) {
+fn setup(
+    mut commands: Commands,
+    mut windows: ResMut<Windows>,
+    asset_server: Res<AssetServer>,
+    mut materials: ResMut<Assets<ColorMaterial>>,
+) {
     let window = windows.get_primary_mut().unwrap();
 
     // カメラを生成する
@@ -43,11 +49,9 @@ fn setup(mut commands: Commands, mut windows: ResMut<Windows>, asset_server: Res
 
     let player_mat = materials.add(asset_server.load(PLAYER_SPRITE).into());
 
-    commands.insert_resource(Materials{
-        player: player_mat.clone()
+    commands.insert_resource(Materials {
+        player: player_mat.clone(),
     });
-
-    spawn_player(&mut commands, player_mat);
 }
 
 fn handle_input(

@@ -7,9 +7,9 @@ const SPEED: f32 = 20.0;
 
 pub struct Player;
 
-pub fn spawn_player(commands: &mut Commands, player_material: Handle<ColorMaterial>) {
+pub fn spawn_player(mut commands: Commands, materials: Res<Materials>) {
     commands.spawn_bundle(SpriteBundle {
-        material: player_material,
+        material: materials.player.clone(),
         transform: Transform {
             translation: Vec3::new(0., 0., 0.),
             scale: Vec3::new(2., 2., 1.),

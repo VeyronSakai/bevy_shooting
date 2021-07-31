@@ -18,7 +18,7 @@ pub fn spawn_player(commands: &mut Commands) {
     })
         .insert(Player)
         .insert(Velocity { dir: Vec2::new(0.0, 0.0), speed: SPEED })
-        .insert(FiresBullet{value: false});
+        .insert(FireBulletInfo{can_fire: false, time: 0.0, interval: 0.1});
 }
 
 pub fn update_player_pos(mut player_query: Query<(&mut Transform, &Velocity), With<Player>>) {

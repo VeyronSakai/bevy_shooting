@@ -7,10 +7,20 @@ pub struct Bullet;
 
 pub fn spawn_bullet(
     mut commands: Commands,
-    mut player_query: Query<(&Transform, &FiresBullet), With<Player>>,
+    time: Res<Time>,
+    mut player_query: Query<(&Transform, &mut FireBulletInfo), With<Player>>,
 ) {
-    if let Ok((player_transform, fires_bullet)) = player_query.single_mut() {
-        if fires_bullet.value {
+    if let Ok((player_transform, mut fires_bullet)) = player_query.single_mut() {
+        if fires_bullet.can_fire {
+
+            fires_bullet.time += time.delta_seconds();
+
+            if fires_bullet.time < fires_bullet.interval {
+                return;
+            }
+
+            fires_bullet.time = 0.0;
+
             let sprite_size = Vec2::new(10.0, 10.0);
             commands
                 .spawn_bundle(SpriteBundle {
@@ -26,7 +36,7 @@ pub fn spawn_bullet(
                 })
                 .insert(Bullet)
                 .insert(Velocity {
-                    speed: 30.0,
+                    speed: 10.0,
                     dir: Vec2::new(0.0, 1.0),
                 });
         }

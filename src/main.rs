@@ -44,7 +44,7 @@ fn setup(mut commands: Commands, mut windows: ResMut<Windows>) {
 
 fn handle_input(
     input: Res<Input<KeyCode>>,
-    mut player_query: Query<(&mut Velocity, &mut FiresBullet), With<Player>>,
+    mut player_query: Query<(&mut Velocity, &mut FireBulletInfo), With<Player>>,
 ) {
     if let Ok((mut velocity, mut fires_bullet)) = player_query.single_mut() {
         velocity.dir = Vec2::new(0.0, 0.0);
@@ -65,6 +65,6 @@ fn handle_input(
             velocity.dir.x += -1.0;
         }
 
-        fires_bullet.value = input.pressed(KeyCode::Space);
+        fires_bullet.can_fire = input.pressed(KeyCode::Space);
     }
 }

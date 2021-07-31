@@ -1,5 +1,7 @@
-pub struct FiresBullet{
-    pub value: bool,
+pub struct FireBulletInfo {
+    pub can_fire: bool,
+    pub time: f32,
+    pub interval: f32,
 }
 
 pub struct WindowSize {

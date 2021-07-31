@@ -1,3 +1,5 @@
+use bevy::prelude::*;
+
 pub struct FireBulletInfo {
     pub can_fire: bool,
     pub time: f32,
@@ -13,4 +15,8 @@ impl FireBulletInfo {
 pub struct WindowSize {
     pub w: f32,
     pub h: f32,
+}
+
+pub struct Materials{
+    pub player: Handle<ColorMaterial>
 }

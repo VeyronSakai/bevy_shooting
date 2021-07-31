@@ -9,6 +9,8 @@ use crate::physics::*;
 use crate::player::*;
 use bevy::prelude::*;
 
+const PLAYER_SPRITE: &str = "player.png";
+
 fn main() {
     App::build()
         .insert_resource(WindowDescriptor {
@@ -25,7 +27,7 @@ fn main() {
         .run();
 }
 
-fn setup(mut commands: Commands, mut windows: ResMut<Windows>) {
+fn setup(mut commands: Commands, mut windows: ResMut<Windows>, asset_server: Res<AssetServer>, mut materials: ResMut<Assets<ColorMaterial>>) {
     let window = windows.get_primary_mut().unwrap();
 
     // カメラを生成する
@@ -39,7 +41,13 @@ fn setup(mut commands: Commands, mut windows: ResMut<Windows>) {
         h: window.height(),
     });
 
-    spawn_player(&mut commands);
+    let player_mat = materials.add(asset_server.load(PLAYER_SPRITE).into());
+
+    commands.insert_resource(Materials{
+        player: player_mat.clone()
+    });
+
+    spawn_player(&mut commands, player_mat);
 }
 
 fn handle_input(

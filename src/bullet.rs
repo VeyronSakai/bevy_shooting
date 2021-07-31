@@ -26,7 +26,7 @@ pub fn spawn_bullet(
                 })
                 .insert(Bullet)
                 .insert(Velocity {
-                    speed: 1.0,
+                    speed: 30.0,
                     dir: Vec2::new(0.0, 1.0),
                 });
         }
@@ -34,7 +34,7 @@ pub fn spawn_bullet(
 }
 
 pub fn update_bullet_pos(mut bullet_query: Query<(&mut Transform, &Velocity), With<Bullet>>) {
-    if let Ok((mut transform, _velocity)) = bullet_query.single_mut() {
-        transform.translation.y += 1.0;
+    for (mut transform, velocity) in bullet_query.iter_mut() {
+        transform.translation.y += velocity.speed;
     }
 }

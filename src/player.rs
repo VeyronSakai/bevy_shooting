@@ -1,6 +1,7 @@
 use bevy::ecs::prelude::*;
 use bevy::prelude::*;
 use crate::physics::*;
+use crate::common::*;
 
 const SPEED: f32 = 20.0;
 
@@ -16,7 +17,8 @@ pub fn spawn_player(commands: &mut Commands) {
         ..Default::default()
     })
         .insert(Player)
-        .insert(Velocity { dir: Vec2::new(0.0, 0.0), speed: SPEED });
+        .insert(Velocity { dir: Vec2::new(0.0, 0.0), speed: SPEED })
+        .insert(FiresBullet{value: false});
 }
 
 pub fn update_player_pos(mut player_query: Query<(&mut Transform, &Velocity), With<Player>>) {

@@ -19,9 +19,8 @@ fn main() {
         })
         .add_plugins(DefaultPlugins)
         .add_startup_system(setup.system())
-        .add_startup_stage("game_setup", SystemStage::single(spawn_player.system()))
+        .add_plugin(PlayerPlugin)
         .add_system_to_stage(CoreStage::PreUpdate, handle_input.system())
-        .add_system(update_player_pos.system())
         .add_system(update_bullet_pos.system())
         .add_system(spawn_bullet.system())
         .add_system(despawn_bullet.system())
@@ -47,10 +46,8 @@ fn setup(
         h: window.height(),
     });
 
-    let player_mat = materials.add(asset_server.load(PLAYER_SPRITE).into());
-
     commands.insert_resource(Materials {
-        player: player_mat.clone(),
+        player: materials.add(asset_server.load(PLAYER_SPRITE).into()),
     });
 }
 

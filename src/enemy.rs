@@ -16,8 +16,9 @@ fn spawn_enemy(mut commands: Commands, materials: Res<Materials>) {
     commands
         .spawn_bundle(SpriteBundle {
             material: materials.enemy.clone(),
-            sprite: Sprite{
-                size: Vec2::new(100.0, 100.0),
+            transform: Transform{
+                translation: Vec3::new(0., 0., 0.),
+                scale: Vec3::new(2., 2., 1.),
                 ..Default::default()
             },
             ..Default::default()

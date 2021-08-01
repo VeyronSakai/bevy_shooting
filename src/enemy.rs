@@ -1,3 +1,5 @@
+use std::f32::consts::PI;
+
 use bevy::prelude::*;
 
 use crate::common::Materials;
@@ -18,6 +20,7 @@ fn spawn_enemy(mut commands: Commands, materials: Res<Materials>) {
             material: materials.enemy.clone(),
             transform: Transform{
                 translation: Vec3::new(0., 0., 0.),
+                rotation: Quat::from_rotation_z(PI),
                 scale: Vec3::new(2., 2., 1.),
                 ..Default::default()
             },

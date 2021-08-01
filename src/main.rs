@@ -10,6 +10,7 @@ use crate::enemy::*;
 use crate::physics::*;
 use crate::player::*;
 use bevy::prelude::*;
+use bevy::sprite::collide_aabb::collide;
 
 const PLAYER_SPRITE: &str = "player.png";
 const ENEMY_SPRITE: &str = "enemy.png";
@@ -26,6 +27,7 @@ fn main() {
         .add_plugin(BulletPlugin)
         .add_plugin(EnemyPlugin)
         .add_system_to_stage(CoreStage::PreUpdate, handle_input.system())
+        .add_system(bullet_collide.system())
         .run();
 }
 
@@ -78,5 +80,30 @@ fn handle_input(
         }
 
         fires_bullet.can_fire = input.pressed(KeyCode::Space);
+    }
+}
+
+fn bullet_collide(
+    mut commands: Commands,
+    bullet_query: Query<(Entity, &Transform, &Sprite), With<Bullet>>,
+    enemy_query: Query<(Entity, &Transform, &Sprite), With<Enemy>>,
+) {
+    for (bullet_entity, bullet_transform, bullet_sprite) in bullet_query.iter() {
+        if let Ok((enemy_entity, enemy_transform, enemy_sprite)) = enemy_query.single() {
+            let collision = collide(
+                bullet_transform.translation,
+                bullet_sprite.size * Vec2::from(bullet_transform.scale),
+                enemy_transform.translation,
+                enemy_sprite.size * Vec2::from(enemy_transform.scale),
+            );
+
+            match collision {
+                Some(collision) => collision,
+                None => continue,
+            };
+
+            commands.entity(bullet_entity).despawn();
+            commands.entity(enemy_entity).despawn();
+        }
     }
 }

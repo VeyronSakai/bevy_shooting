@@ -12,7 +12,7 @@ impl Plugin for EnemyPlugin {
     }
 }
 
-struct Enemy;
+pub struct Enemy;
 
 fn spawn_enemy(mut commands: Commands, materials: Res<Materials>) {
     commands

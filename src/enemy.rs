@@ -18,7 +18,7 @@ fn spawn_enemy(mut commands: Commands, materials: Res<Materials>) {
     commands
         .spawn_bundle(SpriteBundle {
             material: materials.enemy.clone(),
-            transform: Transform{
+            transform: Transform {
                 translation: Vec3::new(0., 0., 0.),
                 rotation: Quat::from_rotation_z(PI),
                 scale: Vec3::new(2., 2., 1.),

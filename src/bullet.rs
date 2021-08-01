@@ -5,11 +5,11 @@ use bevy::prelude::*;
 
 pub struct BulletPlugin;
 
-impl Plugin for BulletPlugin{
+impl Plugin for BulletPlugin {
     fn build(&self, app: &mut AppBuilder) {
         app.add_system(update_bullet_pos.system())
-        .add_system(spawn_bullet.system())
-        .add_system(despawn_bullet.system());
+            .add_system(spawn_bullet.system())
+            .add_system(despawn_bullet.system());
     }
 }
 
@@ -18,11 +18,10 @@ pub struct Bullet;
 pub fn spawn_bullet(
     mut commands: Commands,
     time: Res<Time>,
-    mut player_query: Query<(&Transform, &mut FireBulletInfo), With<Player>>,
+    mut player_query: Query<(&Transform, &mut FireBulletInfo, &Sprite), With<Player>>,
 ) {
-    if let Ok((player_transform, mut fires_bullet)) = player_query.single_mut() {
+    if let Ok((player_transform, mut fires_bullet, player_sprite)) = player_query.single_mut() {
         if fires_bullet.can_fire {
-
             fires_bullet.time += time.delta_seconds();
 
             if fires_bullet.is_in_interval() {
@@ -39,7 +38,12 @@ pub fn spawn_bullet(
                         ..Default::default()
                     },
                     transform: Transform {
-                        translation: player_transform.translation,
+                        translation: Vec3::new(
+                            player_transform.translation.x,
+                            player_transform.translation.y
+                                + player_sprite.size.y * player_transform.scale.y / 2.0,
+                            0.0,
+                        ),
                         ..Default::default()
                     },
                     ..Default::default()
@@ -65,9 +69,7 @@ pub fn despawn_bullet(
     mut bullet_query: Query<(Entity, &Transform), With<Bullet>>,
 ) {
     for (entity, transform) in bullet_query.iter_mut() {
-        if transform.translation.y < -window_size.h
-            || window_size.h - 100.0 < transform.translation.y
-        {
+        if transform.translation.y < -window_size.h || window_size.h < transform.translation.y {
             commands.entity(entity).despawn();
         }
     }

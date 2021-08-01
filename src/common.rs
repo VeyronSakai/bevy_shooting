@@ -18,5 +18,6 @@ pub struct WindowSize {
 }
 
 pub struct Materials{
-    pub player: Handle<ColorMaterial>
+    pub player: Handle<ColorMaterial>,
+    pub enemy: Handle<ColorMaterial>,
 }

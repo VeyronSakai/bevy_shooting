@@ -2,11 +2,13 @@ mod bullet;
 mod common;
 mod physics;
 mod player;
+mod enemy;
 
 use crate::bullet::*;
 use crate::common::*;
 use crate::physics::*;
 use crate::player::*;
+use crate::enemy::*;
 use bevy::prelude::*;
 
 const PLAYER_SPRITE: &str = "player.png";
@@ -21,6 +23,7 @@ fn main() {
         .add_startup_system(setup.system())
         .add_plugin(PlayerPlugin)
         .add_plugin(BulletPlugin)
+        .add_plugin(EnemyPlugin)
         .add_system_to_stage(CoreStage::PreUpdate, handle_input.system())
         .run();
 }
@@ -44,9 +47,14 @@ fn setup(
         h: window.height(),
     });
 
+    let enemy_color = Color::rgb(0.7, 0.7, 0.7);
+
     commands.insert_resource(Materials {
         player: materials.add(asset_server.load(PLAYER_SPRITE).into()),
+        enemy: materials.add(enemy_color.into())
     });
+
+    let enemy_mat = materials.add(enemy_color.into());
 }
 
 fn handle_input(

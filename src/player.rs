@@ -1,13 +1,12 @@
 use crate::common::*;
 use crate::physics::*;
-use bevy::ecs::prelude::*;
 use bevy::prelude::*;
 
 pub struct PlayerPlugin;
 
 impl Plugin for PlayerPlugin {
     fn build(&self, app: &mut AppBuilder) {
-        app.add_startup_stage("game_setup", SystemStage::single(spawn_player.system()))
+        app.add_startup_stage("player_setup", SystemStage::single(spawn_player.system()))
             .add_system(update_player_pos.system());
     }
 }

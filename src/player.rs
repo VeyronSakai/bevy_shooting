@@ -15,12 +15,12 @@ const SPEED: f32 = 20.0;
 
 pub struct Player;
 
-fn spawn_player(mut commands: Commands, materials: Res<Materials>) {
+fn spawn_player(mut commands: Commands, materials: Res<Materials>, window_size: Res<WindowSize>) {
     commands
         .spawn_bundle(SpriteBundle {
             material: materials.player.clone(),
             transform: Transform {
-                translation: Vec3::new(0., 0., 0.),
+                translation: Vec3::new(0., -window_size.h / 4., 0.),
                 scale: Vec3::new(2., 2., 1.),
                 ..Default::default()
             },

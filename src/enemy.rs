@@ -1,8 +1,6 @@
-use std::f32::consts::PI;
-
-use bevy::prelude::*;
-
 use crate::common::Materials;
+use bevy::prelude::*;
+use std::f32::consts::PI;
 
 pub struct EnemyPlugin;
 

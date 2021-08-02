@@ -1,16 +1,16 @@
 mod bullet;
 mod common;
 mod enemy;
+mod explosion;
 mod physics;
 mod player;
-mod explosion;
 
 use crate::bullet::*;
 use crate::common::*;
 use crate::enemy::*;
+use crate::explosion::*;
 use crate::physics::*;
 use crate::player::*;
-use crate::explosion::*;
 use bevy::prelude::*;
 use bevy::sprite::collide_aabb::collide;
 
@@ -119,6 +119,10 @@ fn bullet_collide(
             commands
                 .spawn_bundle(SpriteSheetBundle {
                     texture_atlas: materials.explosion.clone(),
+                    transform: Transform {
+                        translation: enemy_transform.translation,
+                        ..Default::default()
+                    },
                     ..Default::default()
                 })
                 .insert(Timer::from_seconds(0.05, true))

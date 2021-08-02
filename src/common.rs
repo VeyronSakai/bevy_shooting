@@ -17,7 +17,8 @@ pub struct WindowSize {
     pub h: f32,
 }
 
-pub struct Materials{
+pub struct Materials {
     pub player: Handle<ColorMaterial>,
     pub enemy: Handle<ColorMaterial>,
+    pub explosion: Handle<TextureAtlas>,
 }

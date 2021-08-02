@@ -14,6 +14,7 @@ use bevy::sprite::collide_aabb::collide;
 
 const PLAYER_SPRITE: &str = "player.png";
 const ENEMY_SPRITE: &str = "enemy.png";
+const EXPLOSION_SHEET: &str = "explosion.png";
 
 fn main() {
     App::build()
@@ -36,6 +37,7 @@ fn setup(
     mut windows: ResMut<Windows>,
     asset_server: Res<AssetServer>,
     mut materials: ResMut<Assets<ColorMaterial>>,
+    mut texture_atlases: ResMut<Assets<TextureAtlas>>,
 ) {
     let window = windows.get_primary_mut().unwrap();
 
@@ -50,9 +52,13 @@ fn setup(
         h: window.height(),
     });
 
+    let texture_handle = asset_server.load(EXPLOSION_SHEET);
+    let texture_atlas = TextureAtlas::from_grid(texture_handle, Vec2::new(64.0, 64.0), 4, 4);
+
     commands.insert_resource(Materials {
         player: materials.add(asset_server.load(PLAYER_SPRITE).into()),
         enemy: materials.add(asset_server.load(ENEMY_SPRITE).into()),
+        explosion: texture_atlases.add(texture_atlas),
     });
 }
 
@@ -87,6 +93,7 @@ fn bullet_collide(
     mut commands: Commands,
     bullet_query: Query<(Entity, &Transform, &Sprite), With<Bullet>>,
     enemy_query: Query<(Entity, &Transform, &Sprite), With<Enemy>>,
+    materials: Res<Materials>,
 ) {
     for (bullet_entity, bullet_transform, bullet_sprite) in bullet_query.iter() {
         if let Ok((enemy_entity, enemy_transform, enemy_sprite)) = enemy_query.single() {
@@ -104,6 +111,14 @@ fn bullet_collide(
 
             commands.entity(bullet_entity).despawn();
             commands.entity(enemy_entity).despawn();
+
+            // spawn explosion
+            commands
+                .spawn_bundle(SpriteSheetBundle {
+                    texture_atlas: materials.explosion.clone(),
+                    ..Default::default()
+                })
+                .insert(Timer::from_seconds(0.1, true));
         }
     }
 }

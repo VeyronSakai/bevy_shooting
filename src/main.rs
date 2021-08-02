@@ -3,12 +3,14 @@ mod common;
 mod enemy;
 mod physics;
 mod player;
+mod explosion;
 
 use crate::bullet::*;
 use crate::common::*;
 use crate::enemy::*;
 use crate::physics::*;
 use crate::player::*;
+use crate::explosion::*;
 use bevy::prelude::*;
 use bevy::sprite::collide_aabb::collide;
 
@@ -29,6 +31,7 @@ fn main() {
         .add_plugin(EnemyPlugin)
         .add_system_to_stage(CoreStage::PreUpdate, handle_input.system())
         .add_system(bullet_collide.system())
+        .add_system(animate_explosion_sprite.system())
         .run();
 }
 
@@ -118,7 +121,8 @@ fn bullet_collide(
                     texture_atlas: materials.explosion.clone(),
                     ..Default::default()
                 })
-                .insert(Timer::from_seconds(0.1, true));
+                .insert(Timer::from_seconds(0.05, true))
+                .insert(Explosion);
         }
     }
 }

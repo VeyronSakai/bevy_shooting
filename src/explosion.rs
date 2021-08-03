@@ -4,7 +4,7 @@ pub struct Explosion;
 
 pub fn animate_explosion_sprite(
     mut commands: Commands,
-    time: Res<Time>,
+    time: Res<Time>,   
     texture_atlases: Res<Assets<TextureAtlas>>,
     mut query: Query<
         (

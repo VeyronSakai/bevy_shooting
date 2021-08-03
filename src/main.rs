@@ -112,9 +112,6 @@ fn bullet_collide(
                 None => continue,
             };
 
-            commands.entity(bullet_entity).despawn();
-            commands.entity(enemy_entity).despawn();
-
             // spawn explosion
             commands
                 .spawn_bundle(SpriteSheetBundle {
@@ -127,6 +124,9 @@ fn bullet_collide(
                 })
                 .insert(Timer::from_seconds(0.05, true))
                 .insert(Explosion);
+
+            commands.entity(bullet_entity).despawn();
+            commands.entity(enemy_entity).despawn();
         }
     }
 }

@@ -22,6 +22,8 @@ fn main() {
     App::build()
         .insert_resource(WindowDescriptor {
             title: "shooting".to_string(),
+            width: 480.,
+            height: 640.,
             ..Default::default()
         })
         .add_plugins(DefaultPlugins)

@@ -98,7 +98,7 @@ pub fn spawn_enemy_bullet(
                         translation: Vec3::new(
                             enemy_transform.translation.x,
                             enemy_transform.translation.y
-                                + enemy_sprite.size.y * enemy_transform.scale.y / 2.0,
+                                - enemy_sprite.size.y * enemy_transform.scale.y / 2.0,
                             0.0,
                         ),
                         ..Default::default()

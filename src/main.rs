@@ -99,7 +99,7 @@ fn bullet_collide(
     materials: Res<Materials>,
 ) {
     for (bullet_entity, bullet_transform, bullet_sprite) in bullet_query.iter() {
-        if let Ok((enemy_entity, enemy_transform, enemy_sprite)) = enemy_query.single() {
+        for (enemy_entity, enemy_transform, enemy_sprite) in enemy_query.iter(){
             let collision = collide(
                 bullet_transform.translation,
                 bullet_sprite.size * Vec2::from(bullet_transform.scale),

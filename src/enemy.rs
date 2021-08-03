@@ -17,7 +17,20 @@ fn spawn_enemy(mut commands: Commands, materials: Res<Materials>, window_size: R
         .spawn_bundle(SpriteBundle {
             material: materials.enemy.clone(),
             transform: Transform {
-                translation: Vec3::new(0., window_size.h / 4., 0.),
+                translation: Vec3::new(window_size.w / 4., window_size.h / 4., 0.),
+                rotation: Quat::from_rotation_z(PI),
+                scale: Vec3::new(2., 2., 1.),
+                ..Default::default()
+            },
+            ..Default::default()
+        })
+        .insert(Enemy);
+
+    commands
+        .spawn_bundle(SpriteBundle {
+            material: materials.enemy.clone(),
+            transform: Transform {
+                translation: Vec3::new(-window_size.w / 4., window_size.h / 4., 0.),
                 rotation: Quat::from_rotation_z(PI),
                 scale: Vec3::new(2., 2., 1.),
                 ..Default::default()

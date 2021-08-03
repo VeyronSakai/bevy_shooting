@@ -1,4 +1,4 @@
-use crate::common::{Materials, WindowSize};
+use crate::common::*;
 use bevy::prelude::*;
 use std::f32::consts::PI;
 
@@ -24,7 +24,8 @@ fn spawn_enemy(mut commands: Commands, materials: Res<Materials>, window_size: R
             },
             ..Default::default()
         })
-        .insert(Enemy);
+        .insert(Enemy)
+        .insert(FireBulletInfo{can_fire: true, time: 0.0, interval: 0.5});
 
     commands
         .spawn_bundle(SpriteBundle {
@@ -37,5 +38,6 @@ fn spawn_enemy(mut commands: Commands, materials: Res<Materials>, window_size: R
             },
             ..Default::default()
         })
-        .insert(Enemy);
+        .insert(Enemy)
+        .insert(FireBulletInfo{can_fire: true, time: 0.0, interval: 0.5});
 }

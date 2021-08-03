@@ -96,12 +96,17 @@ fn handle_input(
 
 fn bullet_collide(
     mut commands: Commands,
-    bullet_query: Query<(Entity, &Transform, &Sprite), With<Bullet>>,
+    bullet_query: Query<(Entity, &Transform, &Sprite, &BulletOwner), With<Bullet>>,
     enemy_query: Query<(Entity, &Transform, &Sprite), With<Enemy>>,
     materials: Res<Materials>,
 ) {
-    for (bullet_entity, bullet_transform, bullet_sprite) in bullet_query.iter() {
+    for (bullet_entity, bullet_transform, bullet_sprite, bullet_owner) in bullet_query.iter() {
         for (enemy_entity, enemy_transform, enemy_sprite) in enemy_query.iter(){
+
+            if bullet_owner.bullet_type != BulletType::Player{
+                continue;
+            }
+
             let collision = collide(
                 bullet_transform.translation,
                 bullet_sprite.size * Vec2::from(bullet_transform.scale),

@@ -1,4 +1,5 @@
 use crate::common::*;
+use crate::enemy::*;
 use crate::physics::*;
 use crate::player::*;
 use bevy::prelude::*;
@@ -8,14 +9,25 @@ pub struct BulletPlugin;
 impl Plugin for BulletPlugin {
     fn build(&self, app: &mut AppBuilder) {
         app.add_system(update_bullet_pos.system())
-            .add_system(spawn_bullet.system())
+            .add_system(spawn_player_bullet.system())
+            .add_system(spawn_enemy_bullet.system())
             .add_system(despawn_bullet.system());
     }
 }
 
 pub struct Bullet;
 
-pub fn spawn_bullet(
+pub struct BulletOwner {
+    pub bullet_type: BulletType,
+}
+
+#[derive(PartialEq, Copy, Clone)]
+pub enum BulletType {
+    Player,
+    Enemy,
+}
+
+pub fn spawn_player_bullet(
     mut commands: Commands,
     time: Res<Time>,
     mut player_query: Query<(&Transform, &mut FireBulletInfo, &Sprite), With<Player>>,
@@ -52,6 +64,54 @@ pub fn spawn_bullet(
                 .insert(Velocity {
                     speed: 10.0,
                     dir: Vec2::new(0.0, 1.0),
+                })
+                .insert(BulletOwner {
+                    bullet_type: BulletType::Player,
+                });
+        }
+    }
+}
+
+pub fn spawn_enemy_bullet(
+    mut commands: Commands,
+    time: Res<Time>,
+    mut enemy_query: Query<(&Transform, &mut FireBulletInfo, &Sprite), With<Enemy>>,
+) {
+    for (enemy_transform, mut fires_bullet, enemy_sprite) in enemy_query.iter_mut() {
+        if fires_bullet.can_fire {
+            fires_bullet.time += time.delta_seconds();
+
+            if fires_bullet.is_in_interval() {
+                continue;
+            }
+
+            fires_bullet.time = 0.0;
+
+            let sprite_size = Vec2::new(10.0, 10.0);
+            commands
+                .spawn_bundle(SpriteBundle {
+                    sprite: Sprite {
+                        size: sprite_size,
+                        ..Default::default()
+                    },
+                    transform: Transform {
+                        translation: Vec3::new(
+                            enemy_transform.translation.x,
+                            enemy_transform.translation.y
+                                + enemy_sprite.size.y * enemy_transform.scale.y / 2.0,
+                            0.0,
+                        ),
+                        ..Default::default()
+                    },
+                    ..Default::default()
+                })
+                .insert(Bullet)
+                .insert(Velocity {
+                    speed: 10.0,
+                    dir: Vec2::new(0.0, -1.0),
+                })
+                .insert(BulletOwner {
+                    bullet_type: BulletType::Enemy,
                 });
         }
     }
@@ -59,7 +119,7 @@ pub fn spawn_bullet(
 
 pub fn update_bullet_pos(mut bullet_query: Query<(&mut Transform, &Velocity), With<Bullet>>) {
     for (mut transform, velocity) in bullet_query.iter_mut() {
-        transform.translation.y += velocity.speed;
+        transform.translation.y += velocity.dir.y * velocity.speed;
     }
 }
 

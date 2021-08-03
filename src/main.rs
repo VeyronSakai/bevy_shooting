@@ -32,7 +32,8 @@ fn main() {
         .add_plugin(BulletPlugin)
         .add_plugin(EnemyPlugin)
         .add_system_to_stage(CoreStage::PreUpdate, handle_input.system())
-        .add_system(bullet_collide.system())
+        .add_system(player_bullet_collide_enemy.system())
+        .add_system(enemy_bullet_collide_player.system())
         .add_system(animate_explosion_sprite.system())
         .run();
 }
@@ -94,16 +95,15 @@ fn handle_input(
     }
 }
 
-fn bullet_collide(
+fn player_bullet_collide_enemy(
     mut commands: Commands,
     bullet_query: Query<(Entity, &Transform, &Sprite, &BulletOwner), With<Bullet>>,
     enemy_query: Query<(Entity, &Transform, &Sprite), With<Enemy>>,
     materials: Res<Materials>,
 ) {
     for (bullet_entity, bullet_transform, bullet_sprite, bullet_owner) in bullet_query.iter() {
-        for (enemy_entity, enemy_transform, enemy_sprite) in enemy_query.iter(){
-
-            if bullet_owner.bullet_type != BulletType::Player{
+        for (enemy_entity, enemy_transform, enemy_sprite) in enemy_query.iter() {
+            if bullet_owner.bullet_type != BulletType::Player {
                 continue;
             }
 
@@ -134,6 +134,49 @@ fn bullet_collide(
 
             commands.entity(bullet_entity).despawn();
             commands.entity(enemy_entity).despawn();
+        }
+    }
+}
+
+fn enemy_bullet_collide_player(
+    mut commands: Commands,
+    bullet_query: Query<(Entity, &Transform, &Sprite, &BulletOwner), With<Bullet>>,
+    player_query: Query<(Entity, &Transform, &Sprite), With<Player>>,
+    materials: Res<Materials>,
+) {
+    for (bullet_entity, bullet_transform, bullet_sprite, bullet_owner) in bullet_query.iter() {
+        if let Ok((player_entity, player_transform, player_sprite)) = player_query.single() {
+            if bullet_owner.bullet_type != BulletType::Enemy {
+                continue;
+            }
+
+            let collision = collide(
+                bullet_transform.translation,
+                bullet_sprite.size * Vec2::from(bullet_transform.scale),
+                player_transform.translation,
+                player_sprite.size * Vec2::from(player_transform.scale),
+            );
+
+            match collision {
+                Some(collision) => collision,
+                None => continue,
+            };
+
+            // spawn explosion
+            commands
+                .spawn_bundle(SpriteSheetBundle {
+                    texture_atlas: materials.explosion.clone(),
+                    transform: Transform {
+                        translation: player_transform.translation,
+                        ..Default::default()
+                    },
+                    ..Default::default()
+                })
+                .insert(Timer::from_seconds(0.05, true))
+                .insert(Explosion);
+
+            commands.entity(bullet_entity).despawn();
+            commands.entity(player_entity).despawn();
         }
     }
 }

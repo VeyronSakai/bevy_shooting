@@ -88,37 +88,68 @@ pub fn spawn_enemy_bullet(
             fires_bullet.time = 0.0;
 
             let sprite_size = Vec2::new(10.0, 10.0);
-            commands
-                .spawn_bundle(SpriteBundle {
-                    sprite: Sprite {
-                        size: sprite_size,
-                        ..Default::default()
-                    },
-                    transform: Transform {
-                        translation: Vec3::new(
-                            enemy_transform.translation.x,
-                            enemy_transform.translation.y
-                                - enemy_sprite.size.y * enemy_transform.scale.y / 2.0,
-                            0.0,
-                        ),
-                        ..Default::default()
-                    },
-                    ..Default::default()
-                })
-                .insert(Bullet)
-                .insert(Velocity {
-                    speed: 10.0,
-                    dir: Vec2::new(0.0, -1.0),
-                })
-                .insert(BulletOwner {
-                    bullet_type: BulletType::Enemy,
-                });
+
+            spawn_enemy_bullet_internal(
+                &mut commands,
+                sprite_size,
+                enemy_transform,
+                enemy_sprite,
+                Vec2::new(0., -1.),
+            );
+
+            spawn_enemy_bullet_internal(
+                &mut commands,
+                sprite_size,
+                enemy_transform,
+                enemy_sprite,
+                Vec2::new(-1., -1.),
+            );
+
+            spawn_enemy_bullet_internal(
+                &mut commands,
+                sprite_size,
+                enemy_transform,
+                enemy_sprite,
+                Vec2::new(1.0, -1.0),
+            );
         }
     }
 }
 
+fn spawn_enemy_bullet_internal(
+    commands: &mut Commands,
+    sprite_size: Vec2,
+    enemy_transform: &Transform,
+    enemy_sprite: &Sprite,
+    dir: Vec2,
+) {
+    commands
+        .spawn_bundle(SpriteBundle {
+            sprite: Sprite {
+                size: sprite_size,
+                ..Default::default()
+            },
+            transform: Transform {
+                translation: Vec3::new(
+                    enemy_transform.translation.x,
+                    enemy_transform.translation.y
+                        - enemy_sprite.size.y * enemy_transform.scale.y / 2.0,
+                    0.0,
+                ),
+                ..Default::default()
+            },
+            ..Default::default()
+        })
+        .insert(Bullet)
+        .insert(Velocity { speed: 2.5, dir })
+        .insert(BulletOwner {
+            bullet_type: BulletType::Enemy,
+        });
+}
+
 pub fn update_bullet_pos(mut bullet_query: Query<(&mut Transform, &Velocity), With<Bullet>>) {
     for (mut transform, velocity) in bullet_query.iter_mut() {
+        transform.translation.x += velocity.dir.x * velocity.speed;
         transform.translation.y += velocity.dir.y * velocity.speed;
     }
 }

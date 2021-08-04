@@ -7,7 +7,7 @@ pub struct FireBulletInfo {
 }
 
 impl FireBulletInfo {
-    pub fn is_in_interval(&self) -> bool {
+    pub fn is_under_suspension(&self) -> bool {
         return self.time < self.duration;
     }
 }

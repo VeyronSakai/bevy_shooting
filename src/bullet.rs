@@ -36,7 +36,7 @@ pub fn spawn_player_bullet(
         if fires_bullet.can_fire {
             fires_bullet.time += time.delta_seconds();
 
-            if fires_bullet.is_in_interval() {
+            if fires_bullet.is_under_suspension() {
                 return;
             }
 
@@ -81,7 +81,7 @@ pub fn spawn_enemy_bullet(
         if fires_bullet.can_fire {
             fires_bullet.time += time.delta_seconds();
 
-            if fires_bullet.is_in_interval() {
+            if fires_bullet.is_under_suspension() {
                 continue;
             }
 

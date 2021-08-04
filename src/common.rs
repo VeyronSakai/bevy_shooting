@@ -3,12 +3,12 @@ use bevy::prelude::*;
 pub struct FireBulletInfo {
     pub can_fire: bool,
     pub time: f32,
-    pub interval: f32,
+    pub duration: f32,
 }
 
 impl FireBulletInfo {
     pub fn is_in_interval(&self) -> bool {
-        return self.time < self.interval;
+        return self.time < self.duration;
     }
 }
 

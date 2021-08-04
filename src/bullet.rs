@@ -141,7 +141,7 @@ fn spawn_enemy_bullet_internal(
             ..Default::default()
         })
         .insert(Bullet)
-        .insert(Velocity { speed: 2.5, dir })
+        .insert(Velocity { speed: 1.5, dir })
         .insert(BulletOwner {
             bullet_type: BulletType::Enemy,
         });

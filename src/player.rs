@@ -34,7 +34,7 @@ fn spawn_player(mut commands: Commands, materials: Res<Materials>, window_size: 
         .insert(FireBulletInfo {
             can_fire: false,
             time: 0.0,
-            interval: 0.1,
+            duration: 0.1,
         });
 }
 

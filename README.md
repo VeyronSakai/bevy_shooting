@@ -1,4 +1,4 @@
-# bevh_shooting
+# bevy_shooting
 
 
 ## How to run

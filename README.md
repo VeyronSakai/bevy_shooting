@@ -1,7 +1,7 @@
 # bevy_shooting
 
 
-## How to run
+## How To Run
 
 ```
 cargo run

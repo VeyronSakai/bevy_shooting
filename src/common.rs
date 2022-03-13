@@ -21,7 +21,7 @@ pub struct WindowSize {
 
 #[derive(Component)]
 pub struct Materials {
-    pub player: Handle<ColorMaterial>,
-    pub enemy: Handle<ColorMaterial>,
+    pub player: Handle<Image>,
+    pub enemy: Handle<Image>,
     pub explosion: Handle<TextureAtlas>,
 }

@@ -19,7 +19,7 @@ pub struct Player;
 fn spawn_player(mut commands: Commands, materials: Res<Materials>, window_size: Res<WindowSize>) {
     commands
         .spawn_bundle(SpriteBundle {
-            material: materials.player.clone(),
+            texture: materials.player.clone(),
             transform: Transform {
                 translation: Vec3::new(0., -window_size.h / 4., 0.),
                 scale: Vec3::new(2., 2., 1.),

@@ -39,7 +39,7 @@ fn spawn_enemy(mut commands: Commands, materials: Res<Materials>, window_size: R
 fn spawn_enemy_internal(commands: &mut Commands, materials: &Res<Materials>, position: Vec3) {
     commands
         .spawn_bundle(SpriteBundle {
-            sprite: materials.enemy.clone(),
+            texture: materials.enemy.clone(),
             transform: Transform {
                 translation: position,
                 rotation: Quat::from_rotation_z(PI),

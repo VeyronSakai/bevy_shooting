@@ -29,7 +29,7 @@ fn main() {
         .add_plugins(DefaultPlugins)
         .add_startup_system(setup)
         .add_plugin(PlayerPlugin)
-        .add_plugin(BulletPlugin)
+        // .add_plugin(BulletPlugin)
         .add_plugin(EnemyPlugin)
         .add_system_to_stage(CoreStage::PreUpdate, handle_input.system())
         .add_system(player_bullet_collide_enemy.system())
@@ -42,7 +42,6 @@ fn setup(
     mut commands: Commands,
     mut windows: ResMut<Windows>,
     asset_server: Res<AssetServer>,
-    mut materials: ResMut<Assets<ColorMaterial>>,
     mut texture_atlases: ResMut<Assets<TextureAtlas>>,
 ) {
     let window = windows.get_primary_mut().unwrap();
@@ -62,8 +61,8 @@ fn setup(
     let texture_atlas = TextureAtlas::from_grid(texture_handle, Vec2::new(64.0, 64.0), 4, 4);
 
     commands.insert_resource(Materials {
-        player: materials.add(asset_server.load(PLAYER_SPRITE).into()),
-        enemy: materials.add(asset_server.load(ENEMY_SPRITE).into()),
+        player: asset_server.load(PLAYER_SPRITE).into(),
+        enemy: asset_server.load(ENEMY_SPRITE).into(),
         explosion: texture_atlases.add(texture_atlas),
     });
 }

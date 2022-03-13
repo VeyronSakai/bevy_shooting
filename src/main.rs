@@ -19,7 +19,7 @@ const ENEMY_SPRITE: &str = "enemy.png";
 const EXPLOSION_SHEET: &str = "explosion.png";
 
 fn main() {
-    App::build()
+    App::new()
         .insert_resource(WindowDescriptor {
             title: "shooting".to_string(),
             width: 480.,
@@ -27,7 +27,7 @@ fn main() {
             ..Default::default()
         })
         .add_plugins(DefaultPlugins)
-        .add_startup_system(setup.system())
+        .add_startup_system(setup)
         .add_plugin(PlayerPlugin)
         .add_plugin(BulletPlugin)
         .add_plugin(EnemyPlugin)
@@ -72,7 +72,7 @@ fn handle_input(
     input: Res<Input<KeyCode>>,
     mut player_query: Query<(&mut Velocity, &mut FireBulletInfo), With<Player>>,
 ) {
-    if let Ok((mut velocity, mut fires_bullet)) = player_query.single_mut() {
+    if let (mut velocity, mut fires_bullet) = player_query.single_mut() {
         velocity.dir = Vec2::new(0.0, 0.0);
 
         if input.pressed(KeyCode::W) {
@@ -109,9 +109,11 @@ fn player_bullet_collide_enemy(
 
             let collision = collide(
                 bullet_transform.translation,
-                bullet_sprite.size * Vec2::from(bullet_transform.scale),
+                bullet_sprite.custom_size.unwrap()
+                    * Vec2::new(bullet_transform.scale.x, bullet_transform.scale.y),
                 enemy_transform.translation,
-                enemy_sprite.size * Vec2::from(enemy_transform.scale),
+                enemy_sprite.custom_size.unwrap()
+                    * Vec2::new(enemy_transform.scale.x, enemy_transform.scale.y),
             );
 
             match collision {
@@ -145,16 +147,18 @@ fn enemy_bullet_collide_player(
     materials: Res<Materials>,
 ) {
     for (bullet_entity, bullet_transform, bullet_sprite, bullet_owner) in bullet_query.iter() {
-        if let Ok((player_entity, player_transform, player_sprite)) = player_query.single() {
+        if let (player_entity, player_transform, player_sprite) = player_query.single() {
             if bullet_owner.bullet_type != BulletType::Enemy {
                 continue;
             }
 
             let collision = collide(
                 bullet_transform.translation,
-                bullet_sprite.size * Vec2::from(bullet_transform.scale),
+                bullet_sprite.custom_size.unwrap()
+                    * Vec2::new(bullet_transform.scale.x, bullet_transform.scale.y),
                 player_transform.translation,
-                player_sprite.size * Vec2::from(player_transform.scale),
+                player_sprite.custom_size.unwrap()
+                    * Vec2::new(player_transform.scale.x, player_transform.scale.y),
             );
 
             match collision {

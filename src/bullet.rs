@@ -7,7 +7,7 @@ use bevy::prelude::*;
 pub struct BulletPlugin;
 
 impl Plugin for BulletPlugin {
-    fn build(&self, app: &mut AppBuilder) {
+    fn build(&self, app: &mut App) {
         app.add_system(update_bullet_pos.system())
             .add_system(spawn_player_bullet.system())
             .add_system(spawn_enemy_bullet.system())
@@ -15,8 +15,10 @@ impl Plugin for BulletPlugin {
     }
 }
 
+#[derive(Component)]
 pub struct Bullet;
 
+#[derive(Component)]
 pub struct BulletOwner {
     pub bullet_type: BulletType,
 }
@@ -32,7 +34,7 @@ pub fn spawn_player_bullet(
     time: Res<Time>,
     mut player_query: Query<(&Transform, &mut FireBulletInfo, &Sprite), With<Player>>,
 ) {
-    if let Ok((player_transform, mut fires_bullet, player_sprite)) = player_query.single_mut() {
+    if let (player_transform, mut fires_bullet, player_sprite) = player_query.single_mut() {
         if fires_bullet.can_fire {
             fires_bullet.time += time.delta_seconds();
 
@@ -46,14 +48,15 @@ pub fn spawn_player_bullet(
             commands
                 .spawn_bundle(SpriteBundle {
                     sprite: Sprite {
-                        size: sprite_size,
+                        custom_size: Some(sprite_size),
                         ..Default::default()
                     },
                     transform: Transform {
                         translation: Vec3::new(
                             player_transform.translation.x,
                             player_transform.translation.y
-                                + player_sprite.size.y * player_transform.scale.y / 2.0,
+                                + player_sprite.custom_size.unwrap().y * player_transform.scale.y
+                                    / 2.0,
                             0.0,
                         ),
                         ..Default::default()
@@ -126,14 +129,14 @@ fn spawn_enemy_bullet_internal(
     commands
         .spawn_bundle(SpriteBundle {
             sprite: Sprite {
-                size: sprite_size,
+                custom_size: Some(sprite_size),
                 ..Default::default()
             },
             transform: Transform {
                 translation: Vec3::new(
                     enemy_transform.translation.x,
                     enemy_transform.translation.y
-                        - enemy_sprite.size.y * enemy_transform.scale.y / 2.0,
+                        - enemy_sprite.custom_size.unwrap().y * enemy_transform.scale.y / 2.0,
                     0.0,
                 ),
                 ..Default::default()

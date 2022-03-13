@@ -5,7 +5,7 @@ use bevy::prelude::*;
 pub struct PlayerPlugin;
 
 impl Plugin for PlayerPlugin {
-    fn build(&self, app: &mut AppBuilder) {
+    fn build(&self, app: &mut App) {
         app.add_startup_stage("player_setup", SystemStage::single(spawn_player.system()))
             .add_system(update_player_pos.system());
     }
@@ -13,6 +13,7 @@ impl Plugin for PlayerPlugin {
 
 const SPEED: f32 = 20.0;
 
+#[derive(Component)]
 pub struct Player;
 
 fn spawn_player(mut commands: Commands, materials: Res<Materials>, window_size: Res<WindowSize>) {
@@ -39,7 +40,7 @@ fn spawn_player(mut commands: Commands, materials: Res<Materials>, window_size: 
 }
 
 fn update_player_pos(mut player_query: Query<(&mut Transform, &Velocity), With<Player>>) {
-    if let Ok((mut transform, velocity)) = player_query.single_mut() {
+    if let (mut transform, velocity) = player_query.single_mut() {
         transform.translation.x += velocity.dir.x * velocity.speed * 0.2;
         transform.translation.y += velocity.dir.y * velocity.speed * 0.2;
     }

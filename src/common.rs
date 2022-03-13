@@ -1,5 +1,6 @@
 use bevy::prelude::*;
 
+#[derive(Component)]
 pub struct FireBulletInfo {
     pub can_fire: bool,
     pub time: f32,
@@ -12,11 +13,13 @@ impl FireBulletInfo {
     }
 }
 
+#[derive(Component)]
 pub struct WindowSize {
     pub w: f32,
     pub h: f32,
 }
 
+#[derive(Component)]
 pub struct Materials {
     pub player: Handle<ColorMaterial>,
     pub enemy: Handle<ColorMaterial>,

@@ -1,10 +1,11 @@
 use bevy::prelude::*;
 
+#[derive(Component)]
 pub struct Explosion;
 
 pub fn animate_explosion_sprite(
     mut commands: Commands,
-    time: Res<Time>,   
+    time: Res<Time>,
     texture_atlases: Res<Assets<TextureAtlas>>,
     mut query: Query<
         (
@@ -21,7 +22,7 @@ pub fn animate_explosion_sprite(
         if timer.finished() {
             let texture_atlas = texture_atlases.get(texture_atlas_handle).unwrap();
             sprite.index += 1;
-            if sprite.index == texture_atlas.textures.len() as u32 {
+            if sprite.index == texture_atlas.textures.len() {
                 commands.entity(entity).despawn()
             }
         }

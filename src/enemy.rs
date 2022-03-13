@@ -5,11 +5,12 @@ use std::f32::consts::PI;
 pub struct EnemyPlugin;
 
 impl Plugin for EnemyPlugin {
-    fn build(&self, app: &mut AppBuilder) {
+    fn build(&self, app: &mut App) {
         app.add_startup_stage("enemy_setup", SystemStage::single(spawn_enemy.system()));
     }
 }
 
+#[derive(Component)]
 pub struct Enemy;
 
 fn spawn_enemy(mut commands: Commands, materials: Res<Materials>, window_size: Res<WindowSize>) {
@@ -38,7 +39,7 @@ fn spawn_enemy(mut commands: Commands, materials: Res<Materials>, window_size: R
 fn spawn_enemy_internal(commands: &mut Commands, materials: &Res<Materials>, position: Vec3) {
     commands
         .spawn_bundle(SpriteBundle {
-            material: materials.enemy.clone(),
+            sprite: materials.enemy.clone(),
             transform: Transform {
                 translation: position,
                 rotation: Quat::from_rotation_z(PI),

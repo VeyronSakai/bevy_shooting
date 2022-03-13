@@ -71,27 +71,26 @@ fn handle_input(
     input: Res<Input<KeyCode>>,
     mut player_query: Query<(&mut Velocity, &mut FireBulletInfo), With<Player>>,
 ) {
-    if let (mut velocity, mut fires_bullet) = player_query.single_mut() {
-        velocity.dir = Vec2::new(0.0, 0.0);
+    let (mut velocity, mut fires_bullet) = player_query.single_mut();
+    velocity.dir = Vec2::new(0.0, 0.0);
 
-        if input.pressed(KeyCode::W) {
-            velocity.dir.y += 1.0;
-        }
-
-        if input.pressed(KeyCode::S) {
-            velocity.dir.y += -1.0;
-        }
-
-        if input.pressed(KeyCode::D) {
-            velocity.dir.x += 1.0;
-        }
-
-        if input.pressed(KeyCode::A) {
-            velocity.dir.x += -1.0;
-        }
-
-        fires_bullet.can_fire = input.pressed(KeyCode::Space);
+    if input.pressed(KeyCode::W) {
+        velocity.dir.y += 1.0;
     }
+
+    if input.pressed(KeyCode::S) {
+        velocity.dir.y += -1.0;
+    }
+
+    if input.pressed(KeyCode::D) {
+        velocity.dir.x += 1.0;
+    }
+
+    if input.pressed(KeyCode::A) {
+        velocity.dir.x += -1.0;
+    }
+
+    fires_bullet.can_fire = input.pressed(KeyCode::Space);
 }
 
 fn player_bullet_collide_enemy(
@@ -146,40 +145,39 @@ fn enemy_bullet_collide_player(
     materials: Res<Materials>,
 ) {
     for (bullet_entity, bullet_transform, bullet_sprite, bullet_owner) in bullet_query.iter() {
-        if let (player_entity, player_transform, player_sprite) = player_query.single() {
-            if bullet_owner.bullet_type != BulletType::Enemy {
-                continue;
-            }
-
-            let collision = collide(
-                bullet_transform.translation,
-                bullet_sprite.custom_size.unwrap()
-                    * Vec2::new(bullet_transform.scale.x, bullet_transform.scale.y),
-                player_transform.translation,
-                player_sprite.custom_size.unwrap()
-                    * Vec2::new(player_transform.scale.x, player_transform.scale.y),
-            );
-
-            match collision {
-                Some(collision) => collision,
-                None => continue,
-            };
-
-            // spawn explosion
-            commands
-                .spawn_bundle(SpriteSheetBundle {
-                    texture_atlas: materials.explosion.clone(),
-                    transform: Transform {
-                        translation: player_transform.translation,
-                        ..Default::default()
-                    },
-                    ..Default::default()
-                })
-                .insert(Timer::from_seconds(0.05, true))
-                .insert(Explosion);
-
-            commands.entity(bullet_entity).despawn();
-            commands.entity(player_entity).despawn();
+        let (player_entity, player_transform, player_sprite) = player_query.single();
+        if bullet_owner.bullet_type != BulletType::Enemy {
+            continue;
         }
+
+        let collision = collide(
+            bullet_transform.translation,
+            bullet_sprite.custom_size.unwrap()
+                * Vec2::new(bullet_transform.scale.x, bullet_transform.scale.y),
+            player_transform.translation,
+            player_sprite.custom_size.unwrap()
+                * Vec2::new(player_transform.scale.x, player_transform.scale.y),
+        );
+
+        match collision {
+            Some(collision) => collision,
+            None => continue,
+        };
+
+        // spawn explosion
+        commands
+            .spawn_bundle(SpriteSheetBundle {
+                texture_atlas: materials.explosion.clone(),
+                transform: Transform {
+                    translation: player_transform.translation,
+                    ..Default::default()
+                },
+                ..Default::default()
+            })
+            .insert(Timer::from_seconds(0.05, true))
+            .insert(Explosion);
+
+        commands.entity(bullet_entity).despawn();
+        commands.entity(player_entity).despawn();
     }
 }

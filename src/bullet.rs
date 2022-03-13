@@ -34,44 +34,42 @@ pub fn spawn_player_bullet(
     time: Res<Time>,
     mut player_query: Query<(&Transform, &mut FireBulletInfo, &Sprite), With<Player>>,
 ) {
-    if let (player_transform, mut fires_bullet, player_sprite) = player_query.single_mut() {
-        if fires_bullet.can_fire {
-            fires_bullet.time += time.delta_seconds();
+    let (player_transform, mut fires_bullet, player_sprite) = player_query.single_mut();
+    if fires_bullet.can_fire {
+        fires_bullet.time += time.delta_seconds();
 
-            if fires_bullet.is_under_suspension() {
-                return;
-            }
-
-            fires_bullet.time = 0.0;
-
-            let sprite_size = Vec2::new(10.0, 10.0);
-            commands
-                .spawn_bundle(SpriteBundle {
-                    sprite: Sprite {
-                        custom_size: Some(sprite_size),
-                        ..Default::default()
-                    },
-                    transform: Transform {
-                        translation: Vec3::new(
-                            player_transform.translation.x,
-                            player_transform.translation.y
-                                + player_sprite.custom_size.unwrap().y * player_transform.scale.y
-                                    / 2.0,
-                            0.0,
-                        ),
-                        ..Default::default()
-                    },
-                    ..Default::default()
-                })
-                .insert(Bullet)
-                .insert(Velocity {
-                    speed: 10.0,
-                    dir: Vec2::new(0.0, 1.0),
-                })
-                .insert(BulletOwner {
-                    bullet_type: BulletType::Player,
-                });
+        if fires_bullet.is_under_suspension() {
+            return;
         }
+
+        fires_bullet.time = 0.0;
+
+        let sprite_size = Vec2::new(10.0, 10.0);
+        commands
+            .spawn_bundle(SpriteBundle {
+                sprite: Sprite {
+                    custom_size: Some(sprite_size),
+                    ..Default::default()
+                },
+                transform: Transform {
+                    translation: Vec3::new(
+                        player_transform.translation.x,
+                        player_transform.translation.y
+                            + player_sprite.custom_size.unwrap().y * player_transform.scale.y / 2.0,
+                        0.0,
+                    ),
+                    ..Default::default()
+                },
+                ..Default::default()
+            })
+            .insert(Bullet)
+            .insert(Velocity {
+                speed: 10.0,
+                dir: Vec2::new(0.0, 1.0),
+            })
+            .insert(BulletOwner {
+                bullet_type: BulletType::Player,
+            });
     }
 }
 

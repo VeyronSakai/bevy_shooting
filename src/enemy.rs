@@ -6,7 +6,7 @@ pub struct EnemyPlugin;
 
 impl Plugin for EnemyPlugin {
     fn build(&self, app: &mut App) {
-        app.add_startup_stage("enemy_setup", SystemStage::single(spawn_enemy.system()));
+        app.add_startup_stage("enemy_setup", SystemStage::single(spawn_enemy));
     }
 }
 

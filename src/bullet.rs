@@ -8,10 +8,10 @@ pub struct BulletPlugin;
 
 impl Plugin for BulletPlugin {
     fn build(&self, app: &mut App) {
-        app.add_system(update_bullet_pos.system())
-            .add_system(spawn_player_bullet.system())
-            .add_system(spawn_enemy_bullet.system())
-            .add_system(despawn_bullet.system());
+        app.add_system(update_bullet_pos)
+            .add_system(spawn_player_bullet)
+            .add_system(spawn_enemy_bullet)
+            .add_system(despawn_bullet);
     }
 }
 
@@ -44,18 +44,16 @@ pub fn spawn_player_bullet(
 
         fires_bullet.time = 0.0;
 
-        let sprite_size = Vec2::new(10.0, 10.0);
         commands
             .spawn_bundle(SpriteBundle {
                 sprite: Sprite {
-                    custom_size: Some(sprite_size),
+                    custom_size: Some(Vec2::new(10.0, 10.0)),
                     ..Default::default()
                 },
                 transform: Transform {
                     translation: Vec3::new(
                         player_transform.translation.x,
-                        player_transform.translation.y
-                            + player_sprite.custom_size.unwrap().y * player_transform.scale.y / 2.0,
+                        player_transform.translation.y + player_transform.scale.y / 2.0,
                         0.0,
                     ),
                     ..Default::default()
@@ -133,8 +131,7 @@ fn spawn_enemy_bullet_internal(
             transform: Transform {
                 translation: Vec3::new(
                     enemy_transform.translation.x,
-                    enemy_transform.translation.y
-                        - enemy_sprite.custom_size.unwrap().y * enemy_transform.scale.y / 2.0,
+                    enemy_transform.translation.y,
                     0.0,
                 ),
                 ..Default::default()

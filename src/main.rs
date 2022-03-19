@@ -29,12 +29,12 @@ fn main() {
         .add_plugins(DefaultPlugins)
         .add_startup_system(setup)
         .add_plugin(PlayerPlugin)
-        // .add_plugin(BulletPlugin)
+        .add_plugin(BulletPlugin)
         .add_plugin(EnemyPlugin)
-        .add_system_to_stage(CoreStage::PreUpdate, handle_input.system())
-        .add_system(player_bullet_collide_enemy.system())
-        .add_system(enemy_bullet_collide_player.system())
-        .add_system(animate_explosion_sprite.system())
+        .add_system_to_stage(CoreStage::PreUpdate, handle_input)
+        .add_system(player_bullet_collide_enemy)
+        .add_system(enemy_bullet_collide_player)
+        .add_system(animate_explosion_sprite)
         .run();
 }
 
@@ -110,8 +110,7 @@ fn player_bullet_collide_enemy(
                 bullet_sprite.custom_size.unwrap()
                     * Vec2::new(bullet_transform.scale.x, bullet_transform.scale.y),
                 enemy_transform.translation,
-                enemy_sprite.custom_size.unwrap()
-                    * Vec2::new(enemy_transform.scale.x, enemy_transform.scale.y),
+                Vec2::new(enemy_transform.scale.x * 5.0, enemy_transform.scale.y * 5.0),
             );
 
             match collision {
@@ -152,11 +151,9 @@ fn enemy_bullet_collide_player(
 
         let collision = collide(
             bullet_transform.translation,
-            bullet_sprite.custom_size.unwrap()
-                * Vec2::new(bullet_transform.scale.x, bullet_transform.scale.y),
+            Vec2::new(bullet_transform.scale.x, bullet_transform.scale.y),
             player_transform.translation,
-            player_sprite.custom_size.unwrap()
-                * Vec2::new(player_transform.scale.x, player_transform.scale.y),
+            Vec2::new(player_transform.scale.x, player_transform.scale.y),
         );
 
         match collision {

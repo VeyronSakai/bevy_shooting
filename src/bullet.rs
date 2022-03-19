@@ -34,7 +34,11 @@ pub fn spawn_player_bullet(
     time: Res<Time>,
     mut player_query: Query<(&Transform, &mut FireBulletInfo, &Sprite), With<Player>>,
 ) {
-    let (player_transform, mut fires_bullet, player_sprite) = player_query.single_mut();
+    let (player_transform, mut fires_bullet, player_sprite) = match player_query.get_single_mut() {
+        Ok(x) => x,
+        Err(_) => return,
+    };
+
     if fires_bullet.can_fire {
         fires_bullet.time += time.delta_seconds();
 

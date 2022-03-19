@@ -71,7 +71,11 @@ fn handle_input(
     input: Res<Input<KeyCode>>,
     mut player_query: Query<(&mut Velocity, &mut FireBulletInfo), With<Player>>,
 ) {
-    let (mut velocity, mut fires_bullet) = player_query.single_mut();
+    let (mut velocity, mut fires_bullet) = match player_query.get_single_mut() {
+        Ok(x) => x,
+        Err(_) => return,
+    };
+
     velocity.dir = Vec2::new(0.0, 0.0);
 
     if input.pressed(KeyCode::W) {
@@ -144,7 +148,11 @@ fn enemy_bullet_collide_player(
     materials: Res<Materials>,
 ) {
     for (bullet_entity, bullet_transform, bullet_sprite, bullet_owner) in bullet_query.iter() {
-        let (player_entity, player_transform, player_sprite) = player_query.single();
+        let (player_entity, player_transform, player_sprite) = match player_query.get_single() {
+            Ok(x) => x,
+            Err(_) => return,
+        };
+
         if bullet_owner.bullet_type != BulletType::Enemy {
             continue;
         }

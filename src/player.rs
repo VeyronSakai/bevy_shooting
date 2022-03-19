@@ -40,7 +40,11 @@ fn spawn_player(mut commands: Commands, materials: Res<Materials>, window_size: 
 }
 
 fn update_player_pos(mut player_query: Query<(&mut Transform, &Velocity), With<Player>>) {
-    let (mut transform, velocity) = player_query.single_mut();
+    let (mut transform, velocity) = match player_query.get_single_mut() {
+        Ok(x) => x,
+        Err(_) => return,
+    };
+
     transform.translation.x += velocity.dir.x * velocity.speed * 0.2;
     transform.translation.y += velocity.dir.y * velocity.speed * 0.2;
 }

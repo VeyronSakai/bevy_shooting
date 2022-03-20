@@ -105,6 +105,7 @@ fn player_bullet_collide_enemy(
     bullet_query: Query<(Entity, &Transform, &Sprite, &BulletOwner), With<Bullet>>,
     enemy_query: Query<(Entity, &Transform, &Sprite), With<Enemy>>,
     materials: Res<Materials>,
+    mut score_query: Query<&mut Score>,
 ) {
     for (bullet_entity, bullet_transform, bullet_sprite, bullet_owner) in bullet_query.iter() {
         for (enemy_entity, enemy_transform, enemy_sprite) in enemy_query.iter() {
@@ -140,6 +141,9 @@ fn player_bullet_collide_enemy(
 
             commands.entity(bullet_entity).despawn();
             commands.entity(enemy_entity).despawn();
+
+            let mut score = score_query.single_mut();
+            score.value += 1;
         }
     }
 }

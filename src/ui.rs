@@ -4,7 +4,7 @@ pub struct GameUiPlugin;
 
 #[derive(Component)]
 pub struct Score {
-    value: i32,
+    pub value: i32,
 }
 
 impl Score {
@@ -23,7 +23,7 @@ impl Plugin for GameUiPlugin {
 fn update_scrore_system(mut score_query: Query<(&Score, &mut Text)>) {
     let (score, mut text) = score_query.single_mut();
 
-    text.sections[0].value = "1".to_string();
+    text.sections[0].value = score.value.to_string();
 }
 
 fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {

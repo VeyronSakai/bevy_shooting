@@ -143,7 +143,7 @@ fn player_bullet_collide_enemy(
             commands.entity(enemy_entity).despawn();
 
             let mut score = score_query.single_mut();
-            score.value += 1;
+            score.increment();
         }
     }
 }

@@ -11,6 +11,10 @@ impl Score {
     fn new() -> Score {
         Score { value: 0 }
     }
+
+    pub fn increment(&mut self) {
+        self.value += 1;
+    }
 }
 
 impl Plugin for GameUiPlugin {

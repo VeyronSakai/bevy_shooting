@@ -4,6 +4,7 @@ mod enemy;
 mod explosion;
 mod physics;
 mod player;
+mod ui;
 
 use crate::bullet::*;
 use crate::common::*;
@@ -11,6 +12,7 @@ use crate::enemy::*;
 use crate::explosion::*;
 use crate::physics::*;
 use crate::player::*;
+use crate::ui::*;
 use bevy::prelude::*;
 use bevy::sprite::collide_aabb::collide;
 
@@ -31,6 +33,7 @@ fn main() {
         .add_plugin(PlayerPlugin)
         .add_plugin(BulletPlugin)
         .add_plugin(EnemyPlugin)
+        .add_plugin(GameUiPlugin)
         .add_system_to_stage(CoreStage::PreUpdate, handle_input)
         .add_system(player_bullet_collide_enemy)
         .add_system(enemy_bullet_collide_player)

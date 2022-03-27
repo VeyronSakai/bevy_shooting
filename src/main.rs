@@ -13,12 +13,14 @@ use crate::explosion::*;
 use crate::physics::*;
 use crate::player::*;
 use crate::ui::*;
+use bevy::asset::AssetPath;
 use bevy::prelude::*;
 use bevy::sprite::collide_aabb::collide;
 
 const PLAYER_SPRITE: &str = "player.png";
 const ENEMY_SPRITE: &str = "enemy.png";
 const EXPLOSION_SHEET: &str = "explosion.png";
+const EXPLOSION_SOUND: &str = "sounds/explosion.mp3";
 
 fn main() {
     App::new()
@@ -106,6 +108,8 @@ fn player_bullet_collide_enemy(
     enemy_query: Query<(Entity, &Transform, &Sprite), With<Enemy>>,
     materials: Res<Materials>,
     mut score_query: Query<&mut Score>,
+    asset_server: Res<AssetServer>,
+    audio: Res<Audio>,
 ) {
     for (bullet_entity, bullet_transform, bullet_sprite, bullet_owner) in bullet_query.iter() {
         for (enemy_entity, enemy_transform, enemy_sprite) in enemy_query.iter() {
@@ -142,10 +146,21 @@ fn player_bullet_collide_enemy(
             commands.entity(bullet_entity).despawn();
             commands.entity(enemy_entity).despawn();
 
+            play_se(&asset_server, &audio, EXPLOSION_SOUND);
+
             let mut score = score_query.single_mut();
             score.increment();
         }
     }
+}
+
+fn play_se<'a, T: Into<AssetPath<'a>>>(
+    asset_server: &Res<AssetServer>,
+    audio: &Res<Audio>,
+    path: T,
+) {
+    let music: Handle<AudioSource> = asset_server.load(path);
+    audio.play(music);
 }
 
 fn enemy_bullet_collide_player(

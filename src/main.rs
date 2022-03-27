@@ -83,19 +83,19 @@ fn handle_input(
 
     velocity.dir = Vec2::new(0.0, 0.0);
 
-    if input.pressed(KeyCode::W) {
+    if input.pressed(KeyCode::W) || input.pressed(KeyCode::Up) {
         velocity.dir.y += 1.0;
     }
 
-    if input.pressed(KeyCode::S) {
+    if input.pressed(KeyCode::S) || input.pressed(KeyCode::Down) {
         velocity.dir.y += -1.0;
     }
 
-    if input.pressed(KeyCode::D) {
+    if input.pressed(KeyCode::D) || input.pressed(KeyCode::Right) {
         velocity.dir.x += 1.0;
     }
 
-    if input.pressed(KeyCode::A) {
+    if input.pressed(KeyCode::A) || input.pressed(KeyCode::Left) {
         velocity.dir.x += -1.0;
     }
 

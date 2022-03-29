@@ -5,6 +5,7 @@ mod explosion;
 mod physics;
 mod player;
 mod ui;
+mod collision;
 
 use crate::bullet::*;
 use crate::common::*;
@@ -13,9 +14,8 @@ use crate::explosion::*;
 use crate::physics::*;
 use crate::player::*;
 use crate::ui::*;
-use bevy::asset::AssetPath;
-use bevy::prelude::*;
-use bevy::sprite::collide_aabb::collide;
+use crate::collision::CollisionPlugin;
+use bevy::{asset::AssetPath, prelude::*, sprite::collide_aabb::collide};
 
 const PLAYER_SPRITE: &str = "player.png";
 const ENEMY_SPRITE: &str = "enemy.png";
@@ -37,9 +37,10 @@ fn main() {
         .add_plugin(EnemyPlugin)
         .add_plugin(GameUiPlugin)
         .add_system_to_stage(CoreStage::PreUpdate, handle_input)
-        .add_system(player_bullet_collide_enemy)
-        .add_system(enemy_bullet_collide_player)
-        .add_system(animate_explosion_sprite)
+        .add_plugin(CollisionPlugin)
+        // .add_system(player_bullet_collide_enemy)
+        // .add_system(enemy_bullet_collide_player)
+        // .add_system(animate_explosion_sprite)
         .run();
 }
 

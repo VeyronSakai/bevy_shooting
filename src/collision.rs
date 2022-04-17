@@ -1,7 +1,7 @@
+use crate::{animate_explosion_sprite, collide, explosion::ExplosionTimer, App, Bullet, BulletOwner, BulletType, Commands, Enemy, Explosion, Materials, Player, Query, Score, play_se};
 use bevy::prelude::*;
-use crate::{App, animate_explosion_sprite, Commands, Query, BulletOwner, Enemy, Bullet, Materials, Score, BulletType, collide, Explosion, Player};
 
-const EXPLOSION_SOUND: &str = "sounds/explosion.mp3";
+// const EXPLOSION_SOUND: &str = "sounds/n148.mp3";
 
 pub struct CollisionPlugin;
 
@@ -41,6 +41,9 @@ fn player_bullet_collide_enemy(
                 None => continue,
             };
 
+            // mp3 doesn't play
+            // crate::play_se(&asset_server, &audio, EXPLOSION_SOUND);
+
             // spawn explosion
             commands
                 .spawn_bundle(SpriteSheetBundle {
@@ -51,13 +54,13 @@ fn player_bullet_collide_enemy(
                     },
                     ..Default::default()
                 })
-                .insert(Timer::from_seconds(0.05, true))
+                .insert(ExplosionTimer {
+                    value: Timer::from_seconds(0.05, true),
+                })
                 .insert(Explosion);
 
             commands.entity(bullet_entity).despawn();
             commands.entity(enemy_entity).despawn();
-
-            crate::play_se(&asset_server, &audio, EXPLOSION_SOUND);
 
             let mut score = score_query.single_mut();
             score.increment();
@@ -103,7 +106,9 @@ fn enemy_bullet_collide_player(
                 },
                 ..Default::default()
             })
-            .insert(Timer::from_seconds(0.05, true))
+            .insert(ExplosionTimer {
+                value: Timer::from_seconds(0.05, true),
+            })
             .insert(Explosion);
 
         commands.entity(bullet_entity).despawn();

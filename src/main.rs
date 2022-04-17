@@ -1,20 +1,20 @@
 mod bullet;
+mod collision;
 mod common;
 mod enemy;
 mod explosion;
 mod physics;
 mod player;
 mod ui;
-mod collision;
 
 use crate::bullet::*;
+use crate::collision::CollisionPlugin;
 use crate::common::*;
 use crate::enemy::*;
 use crate::explosion::*;
 use crate::physics::*;
 use crate::player::*;
 use crate::ui::*;
-use crate::collision::CollisionPlugin;
 use bevy::{asset::AssetPath, prelude::*, sprite::collide_aabb::collide};
 
 const PLAYER_SPRITE: &str = "player.png";
@@ -104,7 +104,8 @@ fn play_se<'a, T: Into<AssetPath<'a>>>(
     audio: &Res<Audio>,
     path: T,
 ) {
-    let music: Handle<AudioSource> = asset_server.load(path);
-    audio.play(music);
+    audio.play_with_settings(
+        asset_server.load(path),
+        PlaybackSettings::ONCE.with_volume(1.0),
+    );
 }
-
